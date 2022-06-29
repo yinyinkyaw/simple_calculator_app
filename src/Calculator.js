@@ -6,6 +6,7 @@ import { BsDash } from "react-icons/bs";
 import { RiDeleteBack2Line } from "react-icons/ri";
 import { FaPercentage } from "react-icons/fa";
 import "./calculator.css";
+import { setSelectionRange } from '@testing-library/user-event/dist/utils';
 
 const Calculator = () => {
 
@@ -23,140 +24,84 @@ const Calculator = () => {
         setNumber(0);
         setKeywordSequence([]);
         setFinalResult(0);
-    }
-    
-    const handleUpdateSequence = () => {
-        let sequenceList = keywordSequence;
-        switch (currentEvent) {
-            case 'add': {
-                sequenceList += "+";
-                break;
-            }
-            case "subtract": {
-                sequenceList += "-";
-                break;
-            }
-            case "multiply": {
-                sequenceList += "x";
-                break;
-            }
-            case "divide": {
-                sequenceList += "/";
-                break;
-            }
-            case "modules": {
-                sequenceList += "%";
-                break;
-            }
-            default: {
-                sequenceList += "";
-                break;
-            }
-        };
-        setKeywordSequence(sequenceList.toString());
+        setCurrentEvent("");
     }
 
-    const handleUpdateValue = () =>{
+    const handleUpdateValue = (value) =>{
         let finalValue = finalResult;
-        console.log("final value::",finalValue);
+        console.log('final value::',finalValue);
         switch(currentEvent){
             case "add":{
-                setFinalResult(finalValue + number);
-                break;
+                setFinalResult(finalValue + value);break;
             }
-            case "subtract":{
-                setFinalResult(finalValue - number);
-                break;
+            case "substract":{
+                setFinalResult(finalValue - value);break;
             }
             case "multiply":{
-                setFinalResult(finalValue * number);
-                break;
+                setFinalResult(finalValue * value);break;
             }
             case "divide":{
-                setFinalResult(finalValue / number);
-                break;
+                setFinalResult(finalValue / value);break;
             }
             case "modules":{
-                setFinalResult(finalValue % number);
-                break;
+                setFinalResult(finalValue % value);break;
             }
             default:{
-                setFinalResult(finalValue);
+                setFinalResult(parseInt(finalValue));break;
             }
         }
     }
-
-    useEffect(() => {
-        // setNumber(0);
-        handleUpdateSequence()
-    }, [finalResult]);
-
-    useEffect(()=>{
-        setNumber(0);
-        handleUpdateSequence()
-        // switch(currentEvent){
-        //     case "add":{
-        //         setFinalResult(finalResult + number);
-        //         break;
-        //     }
-        //     case "subtract":{
-        //         setFinalResult(finalResult - number);
-        //         break;
-        //     }
-        //     case "multiply":{
-        //         setFinalResult(finalResult * number);
-        //         break;
-        //     }
-        //     case "divide":{
-        //         setFinalResult(finalResult / number);
-        //         break;
-        //     }
-        //     case "modules":{
-        //         setFinalResult(finalResult % number);
-        //         break;
-        //     }
-        //     default:{
-        //         handleGetResult();
-        //     }
-        // }
-    },[currentEvent])
-
-    useEffect(()=> {
-        setCurrentEvent("");
-    }, [number])
-
+    
     const add = () => {
+        let sequenceList = keywordSequence + " + ";
+        setKeywordSequence(sequenceList);
         setCurrentEvent("add");
     }
 
     const substract = () => {
+        let sequenceList = keywordSequence + " - ";
+        setKeywordSequence(sequenceList);
         setCurrentEvent("substract");
     }
 
     const multiply = () => {
+        let sequenceList = keywordSequence + " x ";
+        setKeywordSequence(sequenceList);
         setCurrentEvent("multiply");
     }
 
     const dividen = () => {
+        let sequenceList = keywordSequence + " / ";
+        setKeywordSequence(sequenceList);
         setCurrentEvent("divide");
     }
 
     const modules = () => {
+        let sequenceList = keywordSequence + " % ";
+        setKeywordSequence(sequenceList);
         setCurrentEvent("modules")
     }
 
     const handleClickKeyWord = (value) => {
         let sequenceList = keywordSequence + value;
-        let numberStr = number.toString() + value;
+        let numberStr = "";
+        if(currentEvent !== ""){
+            handleUpdateValue(parseInt(value));
+        }else{
+            numberStr = number.toString() + value.toString() ;
+            setNumber(parseInt(numberStr));
+            setFinalResult(parseInt(numberStr));
+        }    
         setKeywordSequence(sequenceList.toString());
-        setNumber(parseInt(numberStr));
+        
     }
 
     console.log("number::", number, "\nsequence::", keywordSequence, "\nfinal result::", finalResult, "\ncurrent event::",currentEvent);
 
 
     const handleGetResult = () => {
-
+        setCurrentEvent("equal");
+        handleUpdateValue("equal");
     }
 
 
@@ -166,15 +111,15 @@ const Calculator = () => {
             action: restart
         },
         {
-            value: <RiDeleteBack2Line color="#0f53a5" />,
+            value: <RiDeleteBack2Line color="#fff" />,
             action: handleDeleteKeyWord,
         },
         {
-            value: <FaPercentage color="#0f53a5" />,
+            value: <FaPercentage color="#fff" />,
             action: modules,
         },
         {
-            value: <FiDivide color="#0f53a5" />,
+            value: <FiDivide color="#fff" />,
             action: dividen,
         }
     ];
@@ -186,7 +131,7 @@ const Calculator = () => {
                 {keywordSequence && <div className="calculator-app-calculation--sequence">
                     {keywordSequence}
                 </div>}
-                <div>= {finalResult}</div>
+                <div>{finalResult}</div>
             </div>
             <div className="calculator-app-keyboard-section">
                 <div className="calculator-app-function-container">
@@ -235,15 +180,15 @@ const Calculator = () => {
                             <IoMdAdd />
                         </button>
                     </div>
-                    <div className="calculator-app-keyboard-row">
+                    <div className="calculator-app-keyboard-row" style={{gridTemplateColumns: "2.3fr 1fr 1fr"}}>
                         {
                             [0, "."].map((keyWordValue, keyWordIndex) =>
-                                <button onClick={() => { handleClickKeyWord(keyWordValue) }} key={keyWordIndex}>
+                                <button className={keyWordValue === 0 ? "long-keyword-btn":""} onClick={() => { handleClickKeyWord(keyWordValue) }} key={keyWordIndex}>
                                     {keyWordValue}
                                 </button>
                             )
                         }
-                        <button className="calculator-equal-button" onClick={handleGetResult}>
+                        <button className="calculator-equal-button action-btn" onClick={handleGetResult}>
                             =
                         </button>
                     </div>
