@@ -1,16 +1,18 @@
 .calculator-app-container {
-  width: 500px;
-  height: 100vh;
+  width: 300px;
+  height: 80vh;
   margin: auto;
-  background-color: white;
+  background-color: #000;
 }
 .calculator-app-container .calculator-app-calculation-display {
   height: 25vh;
-  border-bottom: 1px solid #cdcdcd;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding-bottom: 10px;
+  color: #CDCDCD;
+  padding: 0 10px 10px;
+  font-weight: 600;
+  font-size: 45px;
 }
 .calculator-app-container .calculator-app-calculation-display .calculator-app-calculation--sequence {
   display: flex;
@@ -20,40 +22,54 @@
 .calculator-app-container .calculator-app-calculation-display > div {
   display: flex;
   justify-content: flex-end;
+  word-break: break-all;
+  white-space: pre-wrap;
 }
 .calculator-app-container .calculator-app-keyboard-section {
-  width: 90%;
+  width: fit-content;
   margin: 0 auto;
+  padding: 15px 0;
 }
 .calculator-app-container .calculator-app-keyboard-section .calculator-app-function-container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  height: 40px;
+  height: 55px;
+  margin-bottom: 5px;
+  grid-column-gap: 20px;
 }
 .calculator-app-container .calculator-app-keyboard-section .calculator-app-keyboard-container {
   display: grid;
   grid-template-rows: repeat(4, 1fr);
+  grid-row-gap: 5px;
 }
 .calculator-app-container .calculator-app-keyboard-section .calculator-app-keyboard-container .calculator-app-keyboard-row {
-  height: 45px;
+  height: 55px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+  grid-column-gap: 20px;
 }
 button {
   border: none;
-  background-color: transparent;
-  width: 40px;
-  height: 40px;
+  background-color: #333;
+  width: 50px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   text-align: center;
-  font-size: 16px;
-}
-button:hover {
-  background-color: #f5f7f9;
+  font-size: 20px;
+  border-radius: 50%;
+  font-weight: 600;
+  color: #cdcdcd;
 }
 .action-btn {
-  color: #0f53a5;
+  color: #fff;
+  background-color: #FE9500;
+}
+.long-keyword-btn {
+  width: 100%;
+  border-radius: 45px;
+  justify-content: start;
+  padding-left: 20px;
 }

@@ -9,191 +9,56 @@ import "./calculator.css";
 
 const Calculator = () => {
 
-    const [finalResult, setFinalResult] = useState(0);
+    const [finalResult, setFinalResult] = useState([]);
     const [keywordSequence, setKeywordSequence] = useState("");
-    const [number, setNumber] = useState(0);
-    const [currentEvent, setCurrentEvent] = useState("");
+    const [calculateResult, setCalculateResult] = useState(0);
 
 
-    const handleDeleteKeyWord = () => {
-
+    const handleClickKeyWord = (keyWord) => {
+        let sequenceList = "";
+        if (keyWord === "delete") {
+            sequenceList = keywordSequence.slice(0, -1);
+        } else {
+            sequenceList = keywordSequence + keyWord;
+        }
+        setKeywordSequence(sequenceList);
     }
 
     const restart = () => {
-        setNumber(0);
-        setKeywordSequence([]);
-        setFinalResult(0);
-    }
-    
-    const handleUpdateSequence = () => {
-        let sequenceList = keywordSequence;
-        switch (currentEvent) {
-            case 'add': {
-                sequenceList += "+";
-                break;
-            }
-            case "subtract": {
-                sequenceList += "-";
-                break;
-            }
-            case "multiply": {
-                sequenceList += "x";
-                break;
-            }
-            case "divide": {
-                sequenceList += "/";
-                break;
-            }
-            case "modules": {
-                sequenceList += "%";
-                break;
-            }
-            default: {
-                sequenceList += "";
-                break;
-            }
-        };
-        setKeywordSequence(sequenceList.toString());
+        setKeywordSequence("");
+        setCalculateResult(0);
     }
 
-    const handleUpdateValue = () =>{
-        let finalValue = finalResult;
-        console.log("final value::",finalValue);
-        switch(currentEvent){
-            case "add":{
-                setFinalResult(finalValue + number);
-                break;
-            }
-            case "subtract":{
-                setFinalResult(finalValue - number);
-                break;
-            }
-            case "multiply":{
-                setFinalResult(finalValue * number);
-                break;
-            }
-            case "divide":{
-                setFinalResult(finalValue / number);
-                break;
-            }
-            case "modules":{
-                setFinalResult(finalValue % number);
-                break;
-            }
-            default:{
-                setFinalResult(finalValue);
-            }
-        }
+    const calculatorFuncList = [{
+        icon: <RiDeleteBack2Line color="#fff" />,
+        name: "delete"
+    },
+    {
+        icon: <FaPercentage color="#fff" />,
+        name: "%"
+    },
+    {
+        icon: <FiDivide color="#fff" />,
+        name: "/"
     }
-
-    useEffect(() => {
-        // setNumber(0);
-        handleUpdateSequence()
-    }, [finalResult]);
-
-    useEffect(()=>{
-        setNumber(0);
-        handleUpdateSequence()
-        // switch(currentEvent){
-        //     case "add":{
-        //         setFinalResult(finalResult + number);
-        //         break;
-        //     }
-        //     case "subtract":{
-        //         setFinalResult(finalResult - number);
-        //         break;
-        //     }
-        //     case "multiply":{
-        //         setFinalResult(finalResult * number);
-        //         break;
-        //     }
-        //     case "divide":{
-        //         setFinalResult(finalResult / number);
-        //         break;
-        //     }
-        //     case "modules":{
-        //         setFinalResult(finalResult % number);
-        //         break;
-        //     }
-        //     default:{
-        //         handleGetResult();
-        //     }
-        // }
-    },[currentEvent])
-
-    useEffect(()=> {
-        setCurrentEvent("");
-    }, [number])
-
-    const add = () => {
-        setCurrentEvent("add");
-    }
-
-    const substract = () => {
-        setCurrentEvent("substract");
-    }
-
-    const multiply = () => {
-        setCurrentEvent("multiply");
-    }
-
-    const dividen = () => {
-        setCurrentEvent("divide");
-    }
-
-    const modules = () => {
-        setCurrentEvent("modules")
-    }
-
-    const handleClickKeyWord = (value) => {
-        let sequenceList = keywordSequence + value;
-        let numberStr = number.toString() + value;
-        setKeywordSequence(sequenceList.toString());
-        setNumber(parseInt(numberStr));
-    }
-
-    console.log("number::", number, "\nsequence::", keywordSequence, "\nfinal result::", finalResult, "\ncurrent event::",currentEvent);
-
-
-    const handleGetResult = () => {
-
-    }
-
-
-    const calculatorFuncList = [
-        {
-            value: 'AC',
-            action: restart
-        },
-        {
-            value: <RiDeleteBack2Line color="#0f53a5" />,
-            action: handleDeleteKeyWord,
-        },
-        {
-            value: <FaPercentage color="#0f53a5" />,
-            action: modules,
-        },
-        {
-            value: <FiDivide color="#0f53a5" />,
-            action: dividen,
-        }
     ];
 
     // console.log("sequence::",keywordSequence)
     return (
         <div className="calculator-app-container">
             <div className="calculator-app-calculation-display">
-                {keywordSequence && <div className="calculator-app-calculation--sequence">
-                    {keywordSequence}
-                </div>}
-                <div>= {finalResult}</div>
+                {keywordSequence && <div className="calculator-app-calculation--sequence">{keywordSequence}</div>}
+                <div>{calculateResult}</div>
             </div>
             <div className="calculator-app-keyboard-section">
                 <div className="calculator-app-function-container">
+                    <button onClick={restart}>
+                        AC
+                    </button>
                     {
-                        calculatorFuncList.map((data, index) =>
-                            <button className="action-btn" key={index} onClick={data.action}>
-                                {data.value}
+                        calculatorFuncList.map((actionIcon, actionIconIndex) =>
+                            <button key={actionIconIndex} onClick={() => handleClickKeyWord(actionIcon.name)}>
+                                {actionIcon.icon}
                             </button>
                         )
                     }
@@ -202,56 +67,55 @@ const Calculator = () => {
                     <div className="calculator-app-keyboard-row">
                         {
                             [7, 8, 9].map((keyWordValue, keyWordIndex) =>
-                                <button onClick={() => { handleClickKeyWord(keyWordValue) }} key={keyWordIndex}>
+                                <button key={keyWordIndex} onClick={() => handleClickKeyWord(keyWordValue.toString())}>
                                     {keyWordValue}
                                 </button>
                             )
                         }
-                        <button className="action-btn" onClick={multiply}>
+                        <button className="action-btn" onClick={() => handleClickKeyWord(" * ")}>
                             <IoMdClose />
                         </button>
                     </div>
-                    <div className="calculator-app-keyboard-row">
+                    <div className="calculator-app-keyboard-row" >
                         {
                             [4, 5, 6].map((keyWordValue, keyWordIndex) =>
-                                <button onClick={() => { handleClickKeyWord(keyWordValue) }} key={keyWordIndex}>
+                                <button key={keyWordIndex} onClick={() => handleClickKeyWord(keyWordValue)}>
                                     {keyWordValue}
                                 </button>
                             )
                         }
-                        <button className="action-btn" onClick={substract}>
+                        <button className="action-btn" onClick={() => handleClickKeyWord(" - ")}>
                             <BsDash />
                         </button>
                     </div>
                     <div className="calculator-app-keyboard-row">
                         {
                             [1, 2, 3].map((keyWordValue, keyWordIndex) =>
-                                <button onClick={() => { handleClickKeyWord(keyWordValue) }} key={keyWordIndex}>
+                                <button key={keyWordIndex} onClick={() => handleClickKeyWord(keyWordValue)}>
                                     {keyWordValue}
                                 </button>
                             )
                         }
-                        <button className="action-btn" onClick={add}>
+                        <button className="action-btn" onClick={() => handleClickKeyWord(" + ")}>
                             <IoMdAdd />
                         </button>
                     </div>
-                    <div className="calculator-app-keyboard-row">
+                    <div className="calculator-app-keyboard-row" style={{ gridTemplateColumns: "2.3fr 1fr 1fr" }}>
                         {
                             [0, "."].map((keyWordValue, keyWordIndex) =>
-                                <button onClick={() => { handleClickKeyWord(keyWordValue) }} key={keyWordIndex}>
+                                <button className={keyWordValue === 0 ? "long-keyword-btn" : ""} key={keyWordIndex} onClick={() => handleClickKeyWord(keyWordValue)}>
                                     {keyWordValue}
                                 </button>
                             )
                         }
-                        <button className="calculator-equal-button" onClick={handleGetResult}>
+                        <button className="calculator-equal-button action-btn" onClick={() => setCalculateResult(eval(keywordSequence))} >
                             =
                         </button>
                     </div>
                 </div>
-
             </div>
         </div>
     )
 }
 
-export default Calculator
+export default Calculator;
